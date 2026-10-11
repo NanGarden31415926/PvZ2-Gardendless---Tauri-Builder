@@ -1,6 +1,7 @@
 # PvZ2: Gardendless — Tauri Builder
 
 > 用 Tauri 打包的 PvZ2: Gardendless 桌面版。
+> Web 项目文件在`../src`中
 
 ## 环境要求
 
