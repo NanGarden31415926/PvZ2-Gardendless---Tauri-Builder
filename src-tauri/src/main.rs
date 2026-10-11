@@ -63,6 +63,7 @@ fn nircmd(order: String) -> Result<(), String> {
     Ok(())
 }
 
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
@@ -72,10 +73,10 @@ fn main() {
                 let _ = window.set_focus();
             }
         }))
-        // .plugin(tauri_plugin_dialog::init())
-        // .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         // .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
+       .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
             let _ = window.emit(
                 "sync-info",
@@ -87,8 +88,16 @@ fn main() {
                 }),
             );
 
-            // #[cfg(debug_assertions)]
-            // window.open_devtools();
+            let w = window.clone();
+            window.on_window_event(move |event| {
+                if let tauri::WindowEvent::Focused(focused) = event {
+                    if *focused {
+                        let _ = w.emit("window-focused", true);
+                    } else {
+                        let _ = w.emit("window-unfocused", false);
+                    }
+                }
+            });
 
             Ok::<(), Box<dyn std::error::Error>>(())
         })
@@ -103,7 +112,7 @@ fn main() {
             close_dev_tools,
             open_url,
             set_resolution,
-            nircmd,
+            nircmd
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
