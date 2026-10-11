@@ -13,7 +13,7 @@
 | [WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) | — | Windows 10/11 通常已内置 |
 
 ## 快速开始
-
+> 在终端使用以下指令
 ```bash
 # 开发模式（热重载）
 cargo tauri dev
