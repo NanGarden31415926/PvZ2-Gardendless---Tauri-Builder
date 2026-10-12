@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use tauri_plugin_opener::OpenerExt;
 use tauri::{Emitter, Manager};
 #[tauri::command]
 fn center(_window: tauri::WebviewWindow) -> Result<(), String> {
@@ -47,9 +48,10 @@ fn close_dev_tools(_window: tauri::WebviewWindow) {
 }
 
 #[tauri::command]
-fn open_url(url: String) -> Result<(), String> {
-    println!("open_url: {}", url);
-    Ok(())
+fn open_url(app: tauri::AppHandle, url: String) -> Result<(), String> {
+    app.opener()
+        .open_url(&url, None::<&str>)
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -75,7 +77,7 @@ fn main() {
         }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        // .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_opener::init())
        .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
             let _ = window.emit(
