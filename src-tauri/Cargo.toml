@@ -26,6 +26,7 @@ tauri-plugin-single-instance = "2.5.2"
 wiggle = "49.0.2"
 tauri-plugin-dialog = "2.8.2"
 tauri-plugin-fs = "2.7.0"
+dirs = "7.0.0"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

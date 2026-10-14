@@ -2805,6 +2805,7 @@ dependencies = [
 name = "pvz2_tauri_v2"
 version = "0.1.0"
 dependencies = [
+ "dirs",
  "serde",
  "serde_json",
  "tauri",
