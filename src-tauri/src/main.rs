@@ -7,7 +7,7 @@ use tauri::{Emitter, Manager};
 use std::fs;
 use std::path::PathBuf;
 
-fn levels_dir(app: &tauri::AppHandle) -> Result<PathBuf, String> {
+fn levels_dir(_app: &tauri::AppHandle) -> Result<PathBuf, String> {
     let base = dirs::document_dir()
         .ok_or("no document_dir")?
         .join("PvZ2Gardendless")
