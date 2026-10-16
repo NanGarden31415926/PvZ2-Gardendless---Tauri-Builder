@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
 const AUDIO_JSON: &str = include_str!("../assets/audio.json");
-
-/// 文件名 → 字节。加音效在这里加一行
+ 
 static AUDIO_FILES: &[(&str, &[u8])] = &[
-    // ("你的文件.mp3", include_bytes!("../assets/你的文件.mp3")),
+    // ("blablabla.mp3", include_bytes!("../assets/audio.mp3")),
 ];
 
 pub fn build_clips() -> HashMap<String, &'static [u8]> {
