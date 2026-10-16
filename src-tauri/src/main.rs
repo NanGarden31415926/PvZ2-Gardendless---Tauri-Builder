@@ -6,6 +6,41 @@ use tauri::{Emitter, Manager};
 
 use std::fs;
 use std::path::PathBuf;
+mod audio;
+mod clips;
+use audio::{AudioEngine, AudioState};
+use std::sync::Mutex;
+use tauri::State;
+
+#[tauri::command]
+fn audio_play(state: State<AudioState>, name: String, speed: f32) -> Result<u32, String> {
+    state.0.lock().unwrap().play(&name, speed)
+}
+
+#[tauri::command]
+fn audio_set_speed(state: State<AudioState>, id: u32, speed: f32) -> Result<(), String> {
+    state.0.lock().unwrap().set_speed(id, speed)
+}
+
+#[tauri::command]
+fn audio_set_volume(state: State<AudioState>, id: u32, volume: f32) -> Result<(), String> {
+    state.0.lock().unwrap().set_volume(id, volume)
+}
+
+#[tauri::command]
+fn audio_set_playing(state: State<AudioState>, id: u32, playing: bool) -> Result<(), String> {
+    state.0.lock().unwrap().set_playing(id, playing)
+}
+
+#[tauri::command]
+fn audio_destroy(state: State<AudioState>, id: u32) -> Result<(), String> {
+    state.0.lock().unwrap().destroy(id)
+}
+
+#[tauri::command]
+fn audio_list(state: State<AudioState>) -> Vec<String> {
+    state.0.lock().unwrap().list_clips()
+}
 
 fn levels_dir(_app: &tauri::AppHandle) -> Result<PathBuf, String> {
     let base = dirs::document_dir()
@@ -147,7 +182,9 @@ fn nircmd(order: String) -> Result<(), String> {
 
 
 fn main() {
+    let engine = AudioEngine::new().expect("audio init failed");
     tauri::Builder::default()
+        .manage(AudioState(Mutex::new(engine)))
         .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.unminimize();
@@ -184,6 +221,13 @@ fn main() {
             Ok::<(), Box<dyn std::error::Error>>(())
         })
         .invoke_handler(tauri::generate_handler![
+            audio_play,
+            audio_set_speed,
+            audio_set_volume,
+            audio_set_playing,
+            audio_destroy,
+            audio_list,
+            audio_destroy,
             save_level,
             load_level,
             remove_level,
