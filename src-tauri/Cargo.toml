@@ -28,6 +28,7 @@ tauri-plugin-dialog = "2.8.2"
 tauri-plugin-fs = "2.7.0"
 dirs = "7.0.0"
 rodio = "0.21"
+mp3-duration = "0.1"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

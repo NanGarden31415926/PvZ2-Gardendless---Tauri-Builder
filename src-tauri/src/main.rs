@@ -13,8 +13,18 @@ use std::sync::Mutex;
 use tauri::State;
 
 #[tauri::command]
-fn audio_play(state: State<AudioState>, name: String, speed: f32) -> Result<u32, String> {
-    state.0.lock().unwrap().play(&name, speed)
+fn audio_play(state: State<AudioState>, name: String, speed: f32, volume: f32) -> Result<u32, String> {
+    state.0.lock().unwrap().play(&name, speed, volume)
+} 
+
+#[tauri::command]
+fn audio_cleanup(state: State<AudioState>) -> usize {
+    state.0.lock().unwrap().cleanup_finished()
+}
+
+#[tauri::command]
+fn audio_get_duration(state: State<AudioState>, id: u32) -> Result<Option<f64>, String> {
+    state.0.lock().unwrap().get_duration(id)
 }
 
 #[tauri::command]
@@ -181,6 +191,7 @@ fn nircmd(order: String) -> Result<(), String> {
 }
 
 
+
 fn main() {
     let engine = AudioEngine::new().expect("audio init failed");
     tauri::Builder::default()
@@ -220,8 +231,10 @@ fn main() {
 
             Ok::<(), Box<dyn std::error::Error>>(())
         })
-        .invoke_handler(tauri::generate_handler![
+        .invoke_handler(tauri::generate_handler![ 
+            audio_cleanup,
             audio_play,
+            audio_get_duration,
             audio_set_speed,
             audio_set_volume,
             audio_set_playing,
